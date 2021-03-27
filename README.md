@@ -1,4 +1,3 @@
 # letsencrypt-tools
 
-etc/letsencrypt/cli.ini
-  email = hostmaster@example.com
+Bash scripts and Let's Encrypt & Apache configurations for managing Let's Encrypt certificates with certbot.

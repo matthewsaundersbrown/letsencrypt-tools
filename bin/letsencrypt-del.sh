@@ -1,5 +1,10 @@
 #!/bin/bash
 
+# must be root
+if [ "$USER" != "root" ]; then
+  exec sudo -u root --shell /bin/bash $0 $@
+fi
+
 help()
 {
   thisfilename=$(basename -- "$0")

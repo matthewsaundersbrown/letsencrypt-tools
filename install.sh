@@ -25,7 +25,7 @@ cp etc/letsencrypt/renewal-hooks/post/sync-certs-to-etc-ssl.sh /etc/letsencrypt/
 chmod 750 /etc/letsencrypt/renewal-hooks/post/sync-certs-to-etc-ssl.sh
 chown root:root /etc/letsencrypt/renewal-hooks/post/sync-certs-to-etc-ssl.sh
 
-domain=`hostaname -d`
+domain=`hostname -d`
 if [ -n "$domain" ]; then
   echo "email = hostmaster@$domain" >> /etc/letsencrypt/cli.ini
   echo "Lets' Encrypt email set to hostmaster@$domain"
@@ -34,8 +34,8 @@ else
 fi
 
 cp etc/apache2/conf-available/certbot.conf /etc/apache2/conf-available/certbot.conf
-a2enmod proxy
-a2enconf certbot
+a2enmod --quiet proxy
+a2enconf --quiet certbot
 systemctl restart apache2
 
 chmod 755 bin/*

@@ -6,13 +6,21 @@ if [ "$USER" != "root" ]; then
   exit
 fi
 
+# check for existing Let's Encrypt install
+if [ -d "/etc/letsencrypt/" ]; then
+  echo "WARNING: Let's Encrypt is already installed."
+  echo "This installer will overwrite existing configurations."
+  echo -e "You have five seconds to execute ctrl-c to cancel this install.\a"
+  sleep 5
+fi
+
 apt-get -y install python3-certbot-apache
 
 mkdir /etc/ssl/letsencrypt
 chmod 750 /etc/ssl/letsencrypt
 chgrp ssl-cert /etc/ssl/letsencrypt
 
-# Let's Encrypt
+# Let's Encrypt configurations
 cp etc/letsencrypt/cli.ini /etc/letsencrypt/cli.ini
 chmod 644 /etc/letsencrypt/cli.ini
 chown root:root /etc/letsencrypt/cli.ini
@@ -28,7 +36,7 @@ chown root:root /etc/letsencrypt/renewal-hooks/post/sync-certs-to-etc-ssl.sh
 domain=`hostname -d`
 if [ -n "$domain" ]; then
   echo "email = hostmaster@$domain" >> /etc/letsencrypt/cli.ini
-  echo "Lets' Encrypt email set to hostmaster@$domain"
+  echo "Let's Encrypt email set to hostmaster@$domain"
 else
   echo "Server DNS domain name not set, Lets' Encrypt email setting left unconfigured."
 fi
@@ -38,5 +46,6 @@ a2enmod --quiet proxy
 a2enconf --quiet certbot
 systemctl restart apache2
 
-chmod 755 bin/*
-cp bin/* /usr/local/bin/
+# install Let's Encrypt user scripts
+cp bin/letsencrypt-* /usr/local/bin
+chmod 755 /usr/local/bin/letsencrypt-*

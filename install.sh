@@ -14,6 +14,7 @@ if [ -d "/etc/letsencrypt/" ]; then
   sleep 5
 fi
 
+apt-get update
 apt-get -y install python3-certbot-apache
 
 mkdir /etc/ssl/letsencrypt

@@ -33,13 +33,15 @@ cp etc/letsencrypt/renewal-hooks/post/sync-certs-to-etc-ssl.sh /etc/letsencrypt/
 chmod 750 /etc/letsencrypt/renewal-hooks/post/sync-certs-to-etc-ssl.sh
 chown root:root /etc/letsencrypt/renewal-hooks/post/sync-certs-to-etc-ssl.sh
 
+echo
 domain=`hostname -d`
 if [ -n "$domain" ]; then
   echo "email = hostmaster@$domain" >> /etc/letsencrypt/cli.ini
   echo "Let's Encrypt email set to hostmaster@$domain"
 else
-  echo "Server DNS domain name not set, Lets' Encrypt email setting left unconfigured."
+  echo "Server DNS domain name not set, Let's Encrypt email setting left unconfigured."
 fi
+echo
 
 cp etc/apache2/conf-available/certbot.conf /etc/apache2/conf-available/certbot.conf
 a2enmod --quiet proxy

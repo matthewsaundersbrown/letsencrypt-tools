@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# sync-certs-to-etc-ssl.sh
+# letsencrypt-sync-certs-to-etc-ssl.sh
 #
 # Takes all Let's Encrypt certs & keys and concats them in
 # to pem files for use by apache, dovecot, exim, haproxy, etc.

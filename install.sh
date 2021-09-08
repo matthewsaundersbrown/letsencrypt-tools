@@ -29,10 +29,6 @@ mkdir -p /etc/letsencrypt/renewal-hooks/deploy/
 cp etc/letsencrypt/renewal-hooks/deploy/cp-to-etc-ssl.sh /etc/letsencrypt/renewal-hooks/deploy/cp-to-etc-ssl.sh
 chmod 750 /etc/letsencrypt/renewal-hooks/deploy/cp-to-etc-ssl.sh
 chown root:root /etc/letsencrypt/renewal-hooks/deploy/cp-to-etc-ssl.sh
-mkdir -p /etc/letsencrypt/renewal-hooks/post/
-cp etc/letsencrypt/renewal-hooks/post/sync-certs-to-etc-ssl.sh /etc/letsencrypt/renewal-hooks/post/sync-certs-to-etc-ssl.sh
-chmod 750 /etc/letsencrypt/renewal-hooks/post/sync-certs-to-etc-ssl.sh
-chown root:root /etc/letsencrypt/renewal-hooks/post/sync-certs-to-etc-ssl.sh
 
 echo
 domain=`hostname -d`

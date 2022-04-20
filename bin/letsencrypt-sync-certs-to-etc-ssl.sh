@@ -13,6 +13,11 @@
 # or specificy the path to the script with the --post-hook cerbot command option
 # to have it automatically run when attempting to obtain/renew certificates.
 
+# must be root
+if [ "$USER" != "root" ]; then
+  exec sudo -u root $0 $@
+fi
+
 # make dir if it doesn't already exist
 if [[ ! -e /etc/ssl/letsencrypt/ ]]; then
     install --owner=root --group=ssl-cert --mode=750 --directory /etc/ssl/letsencrypt

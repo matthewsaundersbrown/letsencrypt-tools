@@ -2,7 +2,7 @@
 
 # must be root
 if [ "$USER" != "root" ]; then
-  exec sudo -u root --shell /bin/bash $0 $@
+  exec sudo -u root $0 $@
 fi
 
 help()

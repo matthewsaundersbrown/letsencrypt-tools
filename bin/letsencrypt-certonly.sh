@@ -11,36 +11,32 @@ help()
   echo "$thisfilename"
   echo "Create a Let's Encrypt certificate."
   echo ""
-  echo "Usage: $thisfilename domain [OPTIONS]"
+  echo "Usage: $thisfilename domain -d <domain> [-t] [-n] [-h]"
   echo ""
-  echo "  -h    Print this help."
-  echo "  -n    Dry Run - don't create cert, just echo command to run."
+  echo "  -h          Print this help."
+  echo "  -d <domain> Domain (hostname) to create certificate for."
+  echo "  -t          Obtain certificates using a DNS TXT record (if you are using PowerDNS for DNS.)"
+  echo "  -n          Dry Run - don't create cert, just echo command to run."
   exit
 }
 
-# check for and set domain
-if [ -n "$1" ]; then
-  if [ $1 == "-h" ]; then
-    help
-  else
-    domain=$1
-    shift
-    # basic but good enough domain name regex validation
-    if [[ ! $domain =~ ^(([a-zA-Z](-?[a-zA-Z0-9])*)\.)+[a-zA-Z]{2,}$ ]] ; then
-      echo "ERROR: Invalid domain name: $1"
-      exit 1
-    fi
-  fi
-else
-  help
-fi
-
-# set any options that were passed
-while getopts "hn" opt; do
+# set options
+while getopts "hd:tn" opt; do
   case "${opt}" in
     h )
       help
       exit;;
+    d ) # domain name (hostname) to create cert for
+      domain=${OPTARG,,}
+      # basic but good enough domain name regex validation
+      if [[ ! $domain =~ ^(([a-zA-Z](-?[a-zA-Z0-9])*)\.)+[a-zA-Z]{2,}$ ]] ; then
+        echo "ERROR: Invalid domain name: $1"
+        exit 1
+      fi
+      ;;
+    t )
+      dnstxt=true
+      ;;
     n )
       dryrun=true
       ;;
@@ -54,7 +50,16 @@ while getopts "hn" opt; do
 done
 
 # set vars
-command="certbot certonly --cert-name $domain"
+command="certbot certonly"
+if [[ -n $dnstxt ]]; then
+  if [[ -f ~/.pdns-credentials.ini ]]; then
+    command="$command --authenticator certbot-dns-powerdns:dns-powerdns --certbot-dns-powerdns:dns-powerdns-credentials ~/.pdns-credentials.ini --certbot-dns-powerdns:dns-powerdns-propagation-seconds 3"
+  else
+    echo "ERROR: ~/.pdns-credentials.ini config file does not exist, can't use -t (DNS TXT authenticator)."
+    exit 1
+  fi
+fi
+
 dnscheck=false
 ips=(`ip -4  -o addr show | awk '{ print $4 }' | cut -d / -f 1`)
 

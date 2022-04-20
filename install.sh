@@ -41,7 +41,7 @@ fi
 echo
 
 cp etc/apache2/conf-available/certbot.conf /etc/apache2/conf-available/certbot.conf
-a2enmod --quiet proxy
+a2enmod --quiet proxy proxy_http
 a2enconf --quiet certbot
 systemctl restart apache2
 

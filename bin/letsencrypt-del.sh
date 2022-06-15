@@ -12,35 +12,27 @@ help()
   echo ""
   echo "Usage: $thisfilename cert-name(domain) [OPTIONS]"
   echo ""
-  echo "  -h    Print this help."
-  echo "  -r    Revoke cert from Let's Encrypt before deleting files."
+  echo "  -h          Print this help."
+  echo "  -d <domain> Domain (hostname) of the certificate to delete."
+  echo "  -r          Revoke cert from Let's Encrypt before deleting files."
   exit
 }
 
-# check for and set domain
-if [ -n "$1" ]; then
-  if [ $1 == "-h" ]; then
-    help
-  else
-    domain=$1
-    shift
-    # basic but good enough domain name regex validation
-    if [[ ! $domain =~ ^(([a-zA-Z](-?[a-zA-Z0-9])*)\.)+[a-zA-Z]{2,}$ ]] ; then
-      echo "ERROR: Invalid domain name: $1"
-      exit 1
-    fi
-  fi
-else
-  help
-fi
-
-# set any options that were passed
-while getopts "hr" opt; do
+# set options
+while getopts "hd:r" opt; do
   case "${opt}" in
     h )
       help
       exit;;
-    r )
+    d ) # domain name (hostname) to create cert for
+      domain=${OPTARG,,}
+      # basic but good enough domain name regex validation
+      if [[ ! $domain =~ ^(([a-zA-Z](-?[a-zA-Z0-9])*)\.)+[a-zA-Z]{2,}$ ]] ; then
+        echo "ERROR: Invalid domain name: $1"
+        exit 1
+      fi
+      ;;
+    r ) # revoke
       revoke=true
       ;;
     \? )
@@ -52,6 +44,11 @@ while getopts "hr" opt; do
   esac
 done
 
+# check for domain (hostname)
+if [[ -z $domain ]]; then
+  echo "domain (hostname) is required"
+  exit
+fi
 
 # start by checking if the renewal config exits
 if test -f "/etc/letsencrypt/renewal/$domain.conf"; then

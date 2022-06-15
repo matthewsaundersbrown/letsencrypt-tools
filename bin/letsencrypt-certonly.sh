@@ -49,15 +49,23 @@ while getopts "hd:tn" opt; do
   esac
 done
 
+# check for domain (hostname)
+if [[ -z $domain ]]; then
+  echo "domain (hostname) is required"
+  exit
+fi
+
 # set vars
 command="certbot certonly"
 if [[ -n $dnstxt ]]; then
-  if [[ -f ~/.pdns-credentials.ini ]]; then
-    command="$command --authenticator certbot-dns-powerdns:dns-powerdns --certbot-dns-powerdns:dns-powerdns-credentials ~/.pdns-credentials.ini --certbot-dns-powerdns:dns-powerdns-propagation-seconds 3"
+  if [[ -f /usr/local/etc/pdns-credentials.ini ]]; then
+    command="$command --authenticator certbot-dns-powerdns:dns-powerdns --certbot-dns-powerdns:dns-powerdns-credentials /usr/local/etc/pdns-credentials.ini --certbot-dns-powerdns:dns-powerdns-propagation-seconds 3"
   else
-    echo "ERROR: ~/.pdns-credentials.ini config file does not exist, can't use -t (DNS TXT authenticator)."
+    echo "ERROR: /usr/local/etc/pdns-credentials.ini config file does not exist, can't use -t (DNS TXT authenticator)."
     exit 1
   fi
+else
+  command="$command --standalone"
 fi
 
 dnscheck=false

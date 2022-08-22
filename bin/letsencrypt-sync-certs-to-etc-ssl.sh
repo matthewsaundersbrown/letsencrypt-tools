@@ -1,5 +1,10 @@
 #!/bin/bash
-
+#
+# letsencrypt-tools
+# https://git.stack-source.com/msb/letsencrypt-tools
+# Copyright (c) 2022 Matthew Saunders Brown <matthewsaundersbrown@gmail.com>
+# GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
+#
 # letsencrypt-sync-certs-to-etc-ssl.sh
 #
 # Takes all Let's Encrypt certs & keys and concats them in

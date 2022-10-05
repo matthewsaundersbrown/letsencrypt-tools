@@ -20,7 +20,7 @@ if [ -d "/etc/letsencrypt/" ]; then
 fi
 
 apt-get update
-apt-get -y install python3-certbot-apache
+DEBIAN_FRONTEND=noninteractive apt-get -y install python3-certbot-apache
 
 mkdir /etc/ssl/letsencrypt
 chmod 750 /etc/ssl/letsencrypt
@@ -34,6 +34,10 @@ mkdir -p /etc/letsencrypt/renewal-hooks/deploy/
 cp etc/letsencrypt/renewal-hooks/deploy/cp-to-etc-ssl.sh /etc/letsencrypt/renewal-hooks/deploy/cp-to-etc-ssl.sh
 chmod 750 /etc/letsencrypt/renewal-hooks/deploy/cp-to-etc-ssl.sh
 chown root:root /etc/letsencrypt/renewal-hooks/deploy/cp-to-etc-ssl.sh
+mkdir -p /etc/letsencrypt/renewal-hooks/post/
+cp etc/letsencrypt/renewal-hooks/post/reload-services.sh /etc/letsencrypt/renewal-hooks/post/reload-services.sh
+chmod 750 /etc/letsencrypt/renewal-hooks/post/reload-services.sh
+chown root:root /etc/letsencrypt/renewal-hooks/post/reload-services.sh
 
 echo
 domain=`hostname -d`
